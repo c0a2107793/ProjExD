@@ -127,6 +127,7 @@ class Up_kinoko(object):
 
 
 # スコアを計測する関数
+#作成者:C0A21077 高橋　拓己
 class Score:
     def __init__(self):
         # 時間の変数
@@ -134,16 +135,30 @@ class Score:
         # スコアの変数
         self.sco = 0
     
+    #通常時の上がり方
     def update(self):
         self.t += 1
         # 一定時間ごとにスコアを１追加する
-        if self.t % 200 == 0:
+        if self.t % 400 == 0:
             self.sco += 1
             # 時間が長くなるにつれ、スコアの上がり幅が上がる
-            if self.t >= 5000:
-                if self.t % 100 == 0:
+            if self.t >= 10000:
+                if self.t % 300 == 0:
                     self.sco += 2
         return self.sco
+    #体が２倍の時のスコアの変化
+    def update_twice(self):
+        self.t += 1
+        if self.t % 100 == 0:
+            self.sco += 2
+        return self.sco
+    #安全地帯でのスコアの変化
+    def update_guard(self):
+        self.t += 1
+        if self.t % 300 == 0:
+            self.sco -= 1
+        return self.sco
+
 
 
 # 安全地帯関連作成者：C0A21015 市古周馬
@@ -278,10 +293,24 @@ def main():
         upkinoko.blit_zanki(scr)
         upkinoko.blit_kinoko(scr)
 
-        # ゲーム中のスコアの表示
-        ans = score.update()
-        text = font1.render(f"{ans}", True, (255,0,0))
-        scr.sfc.blit(text, (100, 100))
+        # ゲーム中のスコアの表示：高橋
+        if life == 0 and kkt.rct.colliderect(gd.rct) == False:
+            #通常時のスコアを表示
+            ans = score.update()
+            text = font1.render(f"{ans}", True, (255,0,0))
+            scr.sfc.blit(text, (100, 100))
+        elif life == 1 and kkt.rct.colliderect(gd.rct) == False:
+            #体が2倍になった時のスコアを表示
+            ans = score.update_twice()
+            text = font1.render(f"{ans}", True, (255,0,0))
+            scr.sfc.blit(text, (100, 100)) 
+        elif kkt.rct.colliderect(gd.rct):
+            #安全地帯にいるときのスコアの表示
+            ans = score.update_guard()
+            text = font1.render(f"{ans}", True, (255,0,0))
+            scr.sfc.blit(text, (100, 100))
+
+
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -289,15 +318,15 @@ def main():
 
         kkt.update(scr)
 
-        for i in range(len(bkd_lst)):
-            bkd_lst[i].update(scr)
-            # 壁に爆弾が反射すると分散する
-            if bkd_lst[i].countwall == 3:
-                bkd_lst[i].countwall = 0
-                bkd = Bomb((255, 0, 0), 10, (+1, +1), scr, bkd_lst[i].rct.centerx, bkd_lst[i].rct.centery)
-                # 個数に制限をかける
-                if len(bkd_lst) <= 3:
-                    bkd_lst.append(bkd)
+        # for i in range(len(bkd_lst)):
+        #     bkd_lst[i].update(scr)
+        #     # 壁に爆弾が反射すると分散する
+        #     if bkd_lst[i].countwall == 3:
+        #         bkd_lst[i].countwall = 0
+        #         bkd = Bomb((255, 0, 0), 10, (+1, +1), scr, bkd_lst[i].rct.centerx, bkd_lst[i].rct.centery)
+        #         # 個数に制限をかける
+        #         if len(bkd_lst) <= 3:
+        #             bkd_lst.append(bkd)
 
             #if kkt.rct.colliderect(bkd_lst[i].rct):
                 
@@ -366,7 +395,7 @@ def main():
                         if kkt.rct.colliderect(bkd_lst[i].rct):
                             # 三瓶栄治(C0A21163)：「追加」HPを減らす
                             upkinoko.minusLives()
-                            # ゲーム終了時のスコアの表示
+                            # ゲーム終了時のスコアの表示:高橋
                             # 三瓶栄治(C0A21163)：HP判定
                             if upkinoko.lives <= 0:                    
                                 text_2 = font1.render(f"your score is {ans}", True, (255,0,0))
