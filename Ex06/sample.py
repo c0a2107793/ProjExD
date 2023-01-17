@@ -318,15 +318,15 @@ def main():
 
         kkt.update(scr)
 
-        # for i in range(len(bkd_lst)):
-        #     bkd_lst[i].update(scr)
-        #     # 壁に爆弾が反射すると分散する
-        #     if bkd_lst[i].countwall == 3:
-        #         bkd_lst[i].countwall = 0
-        #         bkd = Bomb((255, 0, 0), 10, (+1, +1), scr, bkd_lst[i].rct.centerx, bkd_lst[i].rct.centery)
-        #         # 個数に制限をかける
-        #         if len(bkd_lst) <= 3:
-        #             bkd_lst.append(bkd)
+        for i in range(len(bkd_lst)):
+            bkd_lst[i].update(scr)
+            # 壁に爆弾が反射すると分散する
+            if bkd_lst[i].countwall == 3:
+                bkd_lst[i].countwall = 0
+                bkd = Bomb((255, 0, 0), 10, (+1, +1), scr, bkd_lst[i].rct.centerx, bkd_lst[i].rct.centery)
+                # 個数に制限をかける
+                if len(bkd_lst) <= 3:
+                    bkd_lst.append(bkd)
 
             #if kkt.rct.colliderect(bkd_lst[i].rct):
                 
