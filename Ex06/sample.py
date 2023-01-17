@@ -56,7 +56,7 @@ class Bomb:
         self.sfc.set_colorkey((0, 0, 0))
         pg.draw.circle(self.sfc, color, (rad, rad), rad)
         self.rct = self.sfc.get_rect()
-        # 変更点(壁に当たっているかのための判断)
+        # 変更点(壁に当たっているかのための判断)　蒲澤優成　C0A21039
         self.rct.centerx = random.randint(0, scr.rct.width) if posx is None else posx
         self.rct.centery = random.randint(0, scr.rct.height) if posy is None else posy
         self.vx, self.vy = vxy
@@ -69,13 +69,12 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         yoko, tate = check_bound(self.rct, scr.rct)
         self.countwall = check_bound_count(self.rct, scr.rct, self.countwall)
-        # 無条件で加速する爆弾(追加)
-        self.vx *= yoko * 1.0002
-        self.vy *= tate * 1.0002
+        self.vx *= yoko 
+        self.vy *= tate
         self.blit(scr)
 
 
-# キノコを生成する関数 長濱
+# キノコを生成する関数 長濱光希　C0A21153
 class BigMushroom:
     def __init__(self, img_path, vxy, xy, ratio):
         self.sfc = pg.image.load(img_path)
@@ -127,7 +126,7 @@ class Up_kinoko(object):
 
 
 # スコアを計測する関数
-#作成者:C0A21077 高橋　拓己
+# 作成者:C0A21077 高橋　拓己
 class Score:
     def __init__(self):
         # 時間の変数
@@ -135,7 +134,7 @@ class Score:
         # スコアの変数
         self.sco = 0
     
-    #通常時の上がり方
+    # 通常時の上がり方
     def update(self):
         self.t += 1
         # 一定時間ごとにスコアを１追加する
@@ -146,19 +145,18 @@ class Score:
                 if self.t % 300 == 0:
                     self.sco += 2
         return self.sco
-    #体が２倍の時のスコアの変化
+    # 体が２倍の時のスコアの変化
     def update_twice(self):
         self.t += 1
         if self.t % 100 == 0:
             self.sco += 2
         return self.sco
-    #安全地帯でのスコアの変化
+    # 安全地帯でのスコアの変化
     def update_guard(self):
         self.t += 1
         if self.t % 300 == 0:
             self.sco -= 1
         return self.sco
-
 
 
 # 安全地帯関連作成者：C0A21015 市古周馬
@@ -195,7 +193,7 @@ class Guard:
         self.blit(scr)
 
 
-# x座標とy座標で反射した時の反射回数のカウント
+# x座標とy座標で反射した時の反射回数のカウント 蒲澤優成 C0A21039
 def check_bound_count(obj_rct, scr_rct, countup: int) -> int: 
     if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
         countup += 1
@@ -265,8 +263,6 @@ def main():
         bkd = Bomb(color_lst[i%5], 10, (random.choice(range(-2, 3)), random.choice(range(-2, 3))), scr)
         bkd_lst.append(bkd)
 
-    # bkd.update(scr)
-
     # キノコの生成 長濱
     knk = BigMushroom("fig/bigkinoko.png", (random.choice(range(-2, 3)),
                       random.choice(range(-2, 3))), (100,100), 0.1) 
@@ -310,14 +306,12 @@ def main():
             text = font1.render(f"{ans}", True, (255,0,0))
             scr.sfc.blit(text, (100, 100))
 
-
-
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
 
         kkt.update(scr)
-
+        #爆弾が壁に3回当たると赤い球が一つ増える 蒲澤優成 C0A21039
         for i in range(len(bkd_lst)):
             bkd_lst[i].update(scr)
             # 壁に爆弾が反射すると分散する
@@ -325,10 +319,8 @@ def main():
                 bkd_lst[i].countwall = 0
                 bkd = Bomb((255, 0, 0), 10, (+1, +1), scr, bkd_lst[i].rct.centerx, bkd_lst[i].rct.centery)
                 # 個数に制限をかける
-                if len(bkd_lst) <= 3:
+                if len(bkd_lst) <= 8:
                     bkd_lst.append(bkd)
-
-            #if kkt.rct.colliderect(bkd_lst[i].rct):
                 
         # 長濱
         if kkt.rct.colliderect(knk.rct):
@@ -387,8 +379,6 @@ def main():
                         bkd_lst[i].rct.centery = -9999
                         # 元の大きさに変更
                         kkt = Bird("fig/6.png", 2, kkt.rct.center) 
-
-        #kkt.update(scr)
 
                     for i in range(len(bkd_lst)):
                         bkd_lst[i].update(scr)
